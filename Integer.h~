@@ -16,6 +16,9 @@
 #include <stdexcept> // invalid_argument
 #include <string> // string
 #include <vector> // vector
+#include <deque> // deque
+
+using namespace std;
 
 // -----------------
 // shift_left_digits
@@ -32,8 +35,29 @@
 */
 template <typename II, typename OI>
 OI shift_left_digits (II b, II e, int n, OI x) {
-    // <your code>
-    return x;}
+    int counter = 0;
+    OI location = x;
+    counter = 0;
+    while(b + counter < e)
+    {
+      location = location + counter;
+      *location = *(b + counter);
+      int temp = 0;
+      while(location + temp < e)
+      {
+        cout << *(location + temp) << " ";
+        temp++;
+      }
+      cout << endl;
+      counter++;
+    }
+
+    for(int a = 0; a < n; a++)
+    {
+      location = location + a;
+      *location = 0;
+    }
+    return location + 1;}
 
 // ------------------
 // shift_right_digits
@@ -145,8 +169,8 @@ class Integer {
         // -----------
 
         /**
-* <your documentation>
-*/
+         * <your documentation>
+         */
         friend bool operator == (const Integer& lhs, const Integer& rhs) {
             // <your code>
             return false;}
@@ -156,8 +180,8 @@ class Integer {
         // -----------
 
         /**
-* <your documentation>
-*/
+         * <your documentation>
+         */
         friend bool operator != (const Integer& lhs, const Integer& rhs) {
             return !(lhs == rhs);}
 
@@ -166,8 +190,8 @@ class Integer {
         // ----------
 
         /**
-* <your documentation>
-*/
+         * <your documentation>
+         */
         friend bool operator < (const Integer& lhs, const Integer& rhs) {
             // <your code>
             return false;}
@@ -177,8 +201,8 @@ class Integer {
         // -----------
 
         /**
-* <your documentation>
-*/
+         * <your documentation>
+         */
         friend bool operator <= (const Integer& lhs, const Integer& rhs) {
             return !(rhs < lhs);}
 
@@ -187,8 +211,8 @@ class Integer {
         // ----------
 
         /**
-* <your documentation>
-*/
+         * <your documentation>
+         */
         friend bool operator > (const Integer& lhs, const Integer& rhs) {
             return (rhs < lhs);}
 
@@ -197,8 +221,8 @@ class Integer {
         // -----------
 
         /**
-* <your documentation>
-*/
+         * <your documentation>
+         */
         friend bool operator >= (const Integer& lhs, const Integer& rhs) {
             return !(lhs < rhs);}
 
@@ -207,8 +231,8 @@ class Integer {
         // ----------
 
         /**
-* <your documentation>
-*/
+         * <your documentation>
+         */
         friend Integer operator + (Integer lhs, const Integer& rhs) {
             return lhs += rhs;}
 
@@ -217,8 +241,8 @@ class Integer {
         // ----------
 
         /**
-* <your documentation>
-*/
+         * <your documentation>
+         */
         friend Integer operator - (Integer lhs, const Integer& rhs) {
             return lhs -= rhs;}
 
@@ -227,8 +251,8 @@ class Integer {
         // ----------
 
         /**
-* <your documentation>
-*/
+         * <your documentation>
+         */
         friend Integer operator * (Integer lhs, const Integer& rhs) {
             return lhs *= rhs;}
 
@@ -237,9 +261,9 @@ class Integer {
         // ----------
 
         /**
-* <your documentation>
-* @throws invalid_argument if (rhs == 0)
-*/
+         * <your documentation>
+         * @throws invalid_argument if (rhs == 0)
+         */
         friend Integer operator / (Integer lhs, const Integer& rhs) {
             return lhs /= rhs;}
 
@@ -248,9 +272,9 @@ class Integer {
         // ----------
 
         /**
-* <your documentation>
-* @throws invalid_argument if (rhs <= 0)
-*/
+         * <your documentation>
+         * @throws invalid_argument if (rhs <= 0)
+         */
         friend Integer operator % (Integer lhs, const Integer& rhs) {
             return lhs %= rhs;}
 
@@ -259,8 +283,8 @@ class Integer {
         // -----------
 
         /**
-* <your documentation>
-*/
+         * <your documentation>
+         */
         friend Integer operator << (Integer lhs, int rhs) {
             return lhs <<= rhs;}
 
@@ -269,8 +293,8 @@ class Integer {
         // -----------
 
         /**
-* <your documentation>
-*/
+         * <your documentation>
+         */
         friend Integer operator >> (Integer lhs, int rhs) {
             return lhs >>= rhs;}
 
@@ -279,25 +303,25 @@ class Integer {
         // -----------
 
         /**
-* <your documentation>
-*/
+         * <your documentation>
+         */
         friend std::ostream& operator << (std::ostream& lhs, const Integer& rhs) {
             // <your code>
             return lhs << "0";}
 
         /**
-* absolute value
-* <your documentation>
-*/
+         * absolute value
+         * <your documentation>
+         */
         friend Integer abs (Integer x) {
             return x.abs();}
 
         /**
-* power
-* <your documentation>
-* @throws invalid_argument if (x == 0) && (e == 0)
-* @throws invalid_argument if (e < 0)
-*/
+         * power
+         * <your documentation>
+         * @throws invalid_argument if (x == 0) && (e == 0)
+         * @throws invalid_argument if (e < 0)
+         */
         friend Integer pow (Integer x, int e) {
             return x.pow(e);}
 
@@ -306,15 +330,19 @@ class Integer {
         // data
         // ----
 
-        // <your data>
+        deque<int> integer;
+        deque<char> strint;
 
     private:
         // -----
         // valid
         // -----
 
-        bool valid () const {
-            // <your code>
+        bool valid ()  {
+            for(int y = 0; y < (int)integer.size(); y++)
+              if(integer[y] > 9)
+                 return false;
+
             return true;}
 
     public:
@@ -323,18 +351,32 @@ class Integer {
         // ------------
 
         /**
-* <your documentation>
-*/
+         * <your documentation>
+         */
         Integer (int value) {
-            // <your code>
+            while(value > 9){
+              integer.push_front(value % 10);
+              value = value / 10;
+            }
+            integer.push_front(value);
             assert(valid());}
 
         /**
-* <your documentation>
-* @throws invalid_argument if value is not a valid representation of an Integer
-*/
+         * <your documentation>
+         * @throws invalid_argument if value is not a valid representation of an Integer
+         */
         explicit Integer (const std::string& value) {
-            // <your code>
+            for(int i = 0; i < (int)value.length(); i++) {
+              strint.push_back(value.at(i));
+            }
+            for(int x = 0; x < (int)strint.size(); x++) {
+              int test = atoi(&strint[x]);
+              if(test == 0)
+                if(strint[x] != '0')
+                  throw std::invalid_argument("Integer::Integer()");
+              integer.push_back(test);
+            }
+            
             if (!valid())
                 throw std::invalid_argument("Integer::Integer()");}
 
@@ -348,8 +390,8 @@ class Integer {
         // ----------
 
         /**
-* <your documentation>
-*/
+         * <your documentation>
+         */
         Integer operator - () const {
             // <your code>
             return Integer(0);}
@@ -359,15 +401,15 @@ class Integer {
         // -----------
 
         /**
-* <your documentation>
-*/
+         * <your documentation>
+         */
         Integer& operator ++ () {
             *this += 1;
             return *this;}
 
         /**
-* <your documentation>
-*/
+         * <your documentation>
+         */
         Integer operator ++ (int) {
             Integer x = *this;
             ++(*this);
@@ -378,15 +420,15 @@ class Integer {
         // -----------
 
         /**
-* <your documentation>
-*/
+         * <your documentation>
+         */
         Integer& operator -- () {
             *this -= 1;
             return *this;}
 
         /**
-* <your documentation>
-*/
+         * <your documentation>
+         */
         Integer operator -- (int) {
             Integer x = *this;
             --(*this);
@@ -397,8 +439,8 @@ class Integer {
         // -----------
 
         /**
-* <your documentation>
-*/
+         * <your documentation>
+         */
         Integer& operator += (const Integer& rhs) {
             // <your code>
             return *this;}
@@ -408,8 +450,8 @@ class Integer {
         // -----------
 
         /**
-* <your documentation>
-*/
+         * <your documentation>
+         */
         Integer& operator -= (const Integer& rhs) {
             // <your code>
             return *this;}
@@ -419,8 +461,8 @@ class Integer {
         // -----------
 
         /**
-* <your documentation>
-*/
+         * <your documentation>
+         */
         Integer& operator *= (const Integer& rhs) {
             // <your code>
             return *this;}
@@ -430,9 +472,9 @@ class Integer {
         // -----------
 
         /**
-* <your documentation>
-* @throws invalid_argument if (rhs == 0)
-*/
+         * <your documentation>
+         * @throws invalid_argument if (rhs == 0)
+         */
         Integer& operator /= (const Integer& rhs) {
             // <your code>
             return *this;}
@@ -442,9 +484,9 @@ class Integer {
         // -----------
 
         /**
-* <your documentation>
-* @throws invalid_argument if (rhs <= 0)
-*/
+         * <your documentation>
+         * @throws invalid_argument if (rhs <= 0)
+         */
         Integer& operator %= (const Integer& rhs) {
             // <your code>
             return *this;}
@@ -454,8 +496,8 @@ class Integer {
         // ------------
 
         /**
-* <your documentation>
-*/
+         * <your documentation>
+         */
         Integer& operator <<= (int n) {
             // <your code>
             return *this;}
@@ -465,8 +507,8 @@ class Integer {
         // ------------
 
         /**
-* <your documentation>
-*/
+         * <your documentation>
+         */
         Integer& operator >>= (int n) {
             // <your code>
             return *this;}
@@ -476,9 +518,9 @@ class Integer {
         // ---
 
         /**
-* absolute value
-* <your documentation>
-*/
+         * absolute value
+         * <your documentation>
+         */
         Integer& abs () {
             // <your code>
             return *this;}
@@ -488,11 +530,11 @@ class Integer {
         // ---
 
         /**
-* power
-* <your documentation>
-* @throws invalid_argument if (this == 0) && (e == 0)
-* @throws invalid_argument if (e < 0)
-*/
+         * power
+         * <your documentation>
+         * @throws invalid_argument if (this == 0) && (e == 0)
+         * @throws invalid_argument if (e < 0)
+         */
         Integer& pow (int e) {
             // <your code>
             return *this;}};

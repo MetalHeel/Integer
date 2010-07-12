@@ -16,6 +16,9 @@
 #include <stdexcept> // invalid_argument
 #include <string> // string
 #include <vector> // vector
+#include <deque> // deque
+
+using namespace std;
 
 // -----------------
 // shift_left_digits
@@ -32,8 +35,29 @@
 */
 template <typename II, typename OI>
 OI shift_left_digits (II b, II e, int n, OI x) {
-    // <your code>
-    return x;}
+    int counter = 0;
+    OI location = x;
+    counter = 0;
+    while(b + counter < e)
+    {
+      location = location + counter;
+      *location = *(b + counter);
+      int temp = 0;
+      while(b + temp < e)
+      {
+        cout << *(b + temp) << " ";
+        temp++;
+      }
+      cout << endl;
+      counter++;
+    }
+
+    for(int a = 0; a < n; a++)
+    {
+      location = location + a;
+      *location = 0;
+    }
+    return location + 1;}
 
 // ------------------
 // shift_right_digits
@@ -306,15 +330,19 @@ class Integer {
         // data
         // ----
 
-        // <your data>
+        deque<int> integer;
+        deque<char> strint;
 
     private:
         // -----
         // valid
         // -----
 
-        bool valid () const {
-            // <your code>
+        bool valid ()  {
+            for(int y = 0; y < (int)integer.size(); y++)
+              if(integer[y] > 9)
+                 return false;
+
             return true;}
 
     public:
@@ -326,7 +354,11 @@ class Integer {
          * <your documentation>
          */
         Integer (int value) {
-            // <your code>
+            while(value > 9){
+              integer.push_front(value % 10);
+              value = value / 10;
+            }
+            integer.push_front(value);
             assert(valid());}
 
         /**
@@ -334,7 +366,17 @@ class Integer {
          * @throws invalid_argument if value is not a valid representation of an Integer
          */
         explicit Integer (const std::string& value) {
-            // <your code>
+            for(int i = 0; i < (int)value.length(); i++) {
+              strint.push_back(value.at(i));
+            }
+            for(int x = 0; x < (int)strint.size(); x++) {
+              int test = atoi(&strint[x]);
+              if(test == 0)
+                if(strint[x] != '0')
+                  throw std::invalid_argument("Integer::Integer()");
+              integer.push_back(test);
+            }
+            
             if (!valid())
                 throw std::invalid_argument("Integer::Integer()");}
 

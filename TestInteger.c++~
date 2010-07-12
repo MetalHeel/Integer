@@ -41,6 +41,9 @@ struct TestInteger : CppUnit::TestFixture {
         const int b[] = {2, 3, 4, 0, 0};
               int x[10];
         const int* p = shift_left_digits(a, a + 3, 2, x);
+        for(int z = 0; z < 5; z++)
+          cout << *(x+z) << " ";
+        cout << endl;
         CPPUNIT_ASSERT((p - x) == 5);
         CPPUNIT_ASSERT(std::equal(const_cast<const int*>(x), p, b));}
 
