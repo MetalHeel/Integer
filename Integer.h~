@@ -35,29 +35,20 @@ using namespace std;
 */
 template <typename II, typename OI>
 OI shift_left_digits (II b, II e, int n, OI x) {
-    int counter = 0;
     OI location = x;
-    counter = 0;
-    while(b + counter < e)
+    while(b != e)
     {
-      location = location + counter;
-      *location = *(b + counter);
-      int temp = 0;
-      while(location + temp < e)
-      {
-        cout << *(location + temp) << " ";
-        temp++;
-      }
-      cout << endl;
-      counter++;
+      *location = *b;
+      b++;
+      location++;
     }
 
     for(int a = 0; a < n; a++)
     {
-      location = location + a;
-      *location = 0;
+      *(location + a) = 0;
     }
-    return location + 1;}
+
+    return location+n;}
 
 // ------------------
 // shift_right_digits
@@ -74,8 +65,16 @@ OI shift_left_digits (II b, II e, int n, OI x) {
 */
 template <typename II, typename OI>
 OI shift_right_digits (II b, II e, int n, OI x) {
-    // <your code>
-    return x;}
+    e-=n;
+    OI location = x;
+    while(b != e)
+    {
+      *location = *b;
+      b++;
+      location++;
+    }
+
+    return location;}
 
 // -----------
 // plus_digits
@@ -94,8 +93,67 @@ OI shift_right_digits (II b, II e, int n, OI x) {
 */
 template <typename II1, typename II2, typename OI>
 OI plus_digits (II1 b1, II1 e1, II2 b2, II2 e2, OI x) {
-    // <your code>
-    return x;}
+    int size1 = e1 - b1;
+    int size2 = e2 - b2;
+    OI endx;
+
+    if(size2 > size1)
+    {
+      int car = 0;
+      for(int i = 1; i <= size1; i++){
+         int add = *(e2-i) + *(e1 - i) + car;
+         *(x+size2 - i) = add % 10;
+         car = add / 10; 
+      } 
+      
+      for(int i = size1 + 1; i <= size2; i++){
+        int add = *(e2-i) + car;
+        *(x+size2-i) = add % 10;
+        car = add / 10;
+      }
+
+      if(car > 0){
+        endx = x + size2;
+        for(int i = 1; i <= size2; i++){
+          *endx = *(endx - 1);
+          --endx;
+        }
+        *endx = car;
+        endx = endx + size2 + 1;
+      }
+      else
+        endx = x + size2;
+    }
+    else
+    {
+      int car = 0;
+      for(int i = 1; i <= size2; i++){
+         int add = *(e2-i) + *(e1 - i) + car;
+         *(x+size1 - i) = add % 10;
+         car = add / 10; 
+      }
+
+      if(size1 > size2){ 
+        for(int i = size2 + 1; i <= size1; i++){
+          int add = *(e1-i) + car;
+          *(x+size1-i) = add % 10;
+          car = add / 10;
+        }}
+
+      if(car > 0){
+        endx = x + size1;
+        for(int i = 1; i <= size1; i++){
+          *endx = *(endx - 1);
+          --endx;
+        }
+        *endx = car;
+        endx = endx + size1 + 1;
+      }
+      else
+        endx = x + size1;
+    }
+
+    return endx;}
 
 // ------------
 // minus_digits
@@ -114,8 +172,40 @@ OI plus_digits (II1 b1, II1 e1, II2 b2, II2 e2, OI x) {
 */
 template <typename II1, typename II2, typename OI>
 OI minus_digits (II1 b1, II1 e1, II2 b2, II2 e2, OI x) {
-    // <your code>
-    return x;}
+    int size1 = e1 - b1;
+    int size2 = e2 - b2;
+    OI endx;
+
+    int borrow = 0;
+    int carry = 0;
+    for(int i = 1; i <= size2; i++){
+        int t = *(e1-i) + borrow;
+        if(*(e1-i) < *(e2 - i)){
+           borrow = -1;
+           carry = 10;
+        }
+        else
+        {
+          borrow = 0;
+          carry = 0;
+        }
+        int sub = (t + carry) - *(e2 - i);
+        *(x+size1 - i) = sub;
+    }
+
+    if(size1 > size2){
+      for(int i = size2 + 1; i <= size1; i++){
+        int sub = *(e1-i);
+        *(x+size1-i) = sub;
+      }
+    }
+
+    if(*x == 0)
+      x = x + 1;
+
+    endx = x + size1;
+
+    return endx;}
 
 // -----------------
 // multiplies_digits
@@ -134,7 +224,19 @@ OI minus_digits (II1 b1, II1 e1, II2 b2, II2 e2, OI x) {
 */
 template <typename II1, typename II2, typename OI>
 OI multiplies_digits (II1 b1, II1 e1, II2 b2, II2 e2, OI x) {
-    // <your code>
+    int size1 = e1 - b1;
+    int size2 = e2 - b2;
+    OI endx;
+    int accum[];
+    II2 addin;
+
+    for(int i = 1; i < size2; i++)
+    {
+      for(int j = 0; j < size1; j++)
+      {
+        *(accum + 
+      }
+    }
     return x;}
 
 // --------------
@@ -330,7 +432,7 @@ class Integer {
         // data
         // ----
 
-        deque<int> integer;
+        C integer;
         deque<char> strint;
 
     private:
@@ -355,10 +457,18 @@ class Integer {
          */
         Integer (int value) {
             while(value > 9){
-              integer.push_front(value % 10);
+              integer.push_back(value % 10);
               value = value / 10;
             }
-            integer.push_front(value);
+            integer.push_back(value);
+            int count = 0;
+            for(int i = 1; i < (int)integer.size(); i++)
+            {
+              int t = *(integer.rbegin());
+              *(integer.rbegin() - count) = *(integer.rend() + i);
+              *(integer.rend() + i) = t;
+              ++count;
+            }
             assert(valid());}
 
         /**
@@ -369,11 +479,18 @@ class Integer {
             for(int i = 0; i < (int)value.length(); i++) {
               strint.push_back(value.at(i));
             }
+            int temp = 1;
+            if(strint[0] == '-'){
+              temp = -1;
+              strint.erase(strint.begin());
+            }
             for(int x = 0; x < (int)strint.size(); x++) {
-              int test = atoi(&strint[x]);
+              int test = temp * atoi(&strint[x]);
               if(test == 0)
+              {
                 if(strint[x] != '0')
                   throw std::invalid_argument("Integer::Integer()");
+              }
               integer.push_back(test);
             }
             
@@ -384,7 +501,28 @@ class Integer {
         // Integer (const Integer&);
         // ~Integer ();
         // Integer& operator = (const Integer&);
+        
+        // ------------
+        // getOnesPlace
+        // ------------
 
+        /**
+         * <documentation yo>
+         */
+        T* getOnesPlace() {
+          return integer.front();
+        }
+
+        // ---------------
+        // getMostSigPlace
+        // ---------------
+
+        /**
+         * <documentation yo>
+         */
+        T* getMostSigPlace() {
+          return integer.end();
+        }
         // ----------
         // operator -
         // ----------

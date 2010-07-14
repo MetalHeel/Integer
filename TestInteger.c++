@@ -69,6 +69,15 @@ struct TestInteger : CppUnit::TestFixture {
         CPPUNIT_ASSERT(p - x == 3);
         CPPUNIT_ASSERT(std::equal(const_cast<const int*>(x), p, c));}
 
+    void test_plus_digits2 () {
+        const int a[] = {1, 1, 1};
+        const int b[] = {9, 9, 9};
+        const int c[] = {1, 1, 1, 0};
+              int x[10];
+        const int* p = plus_digits(a, a + 3, b, b + 3, x);
+        CPPUNIT_ASSERT(p - x == 4);
+        CPPUNIT_ASSERT(std::equal(const_cast<const int*>(x), p, c));}
+
     // ------------
     // minus_digits
     // ------------
@@ -227,10 +236,11 @@ struct TestInteger : CppUnit::TestFixture {
 
     CPPUNIT_TEST_SUITE(TestInteger);
     CPPUNIT_TEST(test_shift_left_digits);
- /*   CPPUNIT_TEST(test_shift_right_digits);
+    CPPUNIT_TEST(test_shift_right_digits);
     CPPUNIT_TEST(test_plus_digits);
+    CPPUNIT_TEST(test_plus_digits2);
     CPPUNIT_TEST(test_minus_digits);
-    CPPUNIT_TEST(test_multiplies_digits);
+/*    CPPUNIT_TEST(test_multiplies_digits);
     CPPUNIT_TEST(test_divides_digits);*/
     CPPUNIT_TEST(test_constructor_1);
     CPPUNIT_TEST(test_constructor_2);
