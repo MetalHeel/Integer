@@ -117,6 +117,14 @@ struct TestInteger : CppUnit::TestFixture {
         CPPUNIT_ASSERT(p - x == 3);
         CPPUNIT_ASSERT(std::equal(const_cast<const int*>(x), p, c));}
 
+    void test_divides_digits2 () {
+        const int a[] = {1,0};
+        const int b[] = {2};
+        const int c[] = {5};
+              int x[10];
+        const int* p = divides_digits(a, a + 2, b, b + 1, x);
+        CPPUNIT_ASSERT(p - x == 1);
+        CPPUNIT_ASSERT(std::equal(const_cast<const int*>(x), p, c));}
     // -----------
     // constructor
     // -----------
@@ -136,7 +144,7 @@ struct TestInteger : CppUnit::TestFixture {
 
     void test_constructor_3 () {
         try {
-            const Integer<int> x = 2;}
+            const Integer<int> x = 23;}
         catch (std::invalid_argument& e) {
             CPPUNIT_ASSERT(false);}}
 
@@ -204,7 +212,27 @@ struct TestInteger : CppUnit::TestFixture {
         catch (std::invalid_argument& e) {
             CPPUNIT_ASSERT(false);}}
 
-    // ---
+    void test_output2 () {
+        try {
+            const Integer<int> x = -98765;
+            std::ostringstream out;
+            out << x;
+            CPPUNIT_ASSERT(out.str() == "-98765");}
+        catch (std::invalid_argument& e) {
+            CPPUNIT_ASSERT(false);}}
+            
+    void test_plus_equals () {
+        try {
+            Integer<int> x = -98765;
+            const Integer<int> y = 98765;
+            CPPUNIT_ASSERT(x == -98765);
+            CPPUNIT_ASSERT(y == 98765);
+            x += y;
+            CPPUNIT_ASSERT(x == 0);
+            CPPUNIT_ASSERT(y == 98765);
+            }
+        catch (std::invalid_argument& e) {
+            CPPUNIT_ASSERT(false);}}    // ---
     // pow
     // ---
 
@@ -240,16 +268,19 @@ struct TestInteger : CppUnit::TestFixture {
     CPPUNIT_TEST(test_plus_digits);
     CPPUNIT_TEST(test_plus_digits2);
     CPPUNIT_TEST(test_minus_digits);
-/*    CPPUNIT_TEST(test_multiplies_digits);
-    CPPUNIT_TEST(test_divides_digits);*/
+    CPPUNIT_TEST(test_multiplies_digits);
+    CPPUNIT_TEST(test_divides_digits);
+    CPPUNIT_TEST(test_divides_digits2);
     CPPUNIT_TEST(test_constructor_1);
     CPPUNIT_TEST(test_constructor_2);
     CPPUNIT_TEST(test_constructor_3);
- /*   CPPUNIT_TEST(test_abs_1);
+    CPPUNIT_TEST(test_abs_1);
     CPPUNIT_TEST(test_abs_2);
     CPPUNIT_TEST(test_negation);
     CPPUNIT_TEST(test_output);
-    CPPUNIT_TEST(test_pow_1);
+    CPPUNIT_TEST(test_output2);
+    CPPUNIT_TEST(test_plus_equals);
+/*    CPPUNIT_TEST(test_pow_1);
     CPPUNIT_TEST(test_pow_2);*/
     CPPUNIT_TEST_SUITE_END();};
 
