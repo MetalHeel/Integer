@@ -152,7 +152,7 @@ OI plus_digits (II1 b1, II1 e1, II2 b2, II2 e2, OI x) {
       else
         endx = x + size1;
     }
-
+    
     return endx;}
 
 // ------------
@@ -180,7 +180,7 @@ OI minus_digits (II1 b1, II1 e1, II2 b2, II2 e2, OI x) {
     int carry = 0;
     for(int i = 1; i <= size2; i++){
         int t = *(e1-i) + borrow;
-        if(*(e1-i) < *(e2 - i)){
+        if(t < *(e2 - i)){
            borrow = -1;
            carry = 10;
         }
@@ -189,21 +189,35 @@ OI minus_digits (II1 b1, II1 e1, II2 b2, II2 e2, OI x) {
           borrow = 0;
           carry = 0;
         }
+
         int sub = (t + carry) - *(e2 - i);
         *(x+size1 - i) = sub;
     }
 
     if(size1 > size2){
       for(int i = size2 + 1; i <= size1; i++){
-        int sub = *(e1-i);
+        int sub = 0;
+        if(*(e1-i) == 0 && borrow == -1){
+           sub = 9;
+        }
+        else{
+           sub = *(e1-i) + borrow;
+           borrow = 0;
+        }
         *(x+size1-i) = sub;
       }
     }
 
-    if(*x == 0)
-      x = x + 1;
-
     endx = x + size1;
+
+    while(*x == 0 && x !=  (endx - 1))
+    {
+        for(int i = 0; i < size1 - 1; i++)
+        {
+            *(x + i) = *(x + i + 1);
+        }
+        endx = endx - 1;
+    }
 
     return endx;}
 
@@ -224,20 +238,27 @@ OI minus_digits (II1 b1, II1 e1, II2 b2, II2 e2, OI x) {
 */
 template <typename II1, typename II2, typename OI>
 OI multiplies_digits (II1 b1, II1 e1, II2 b2, II2 e2, OI x) {
-    int size1 = e1 - b1;
+	int size1 = e1 - b1;
     int size2 = e2 - b2;
-    OI endx;
-    int accum[];
-    II2 addin;
-
-    for(int i = 1; i < size2; i++)
-    {
-      for(int j = 0; j < size1; j++)
-      {
-        *(accum + 
-      }
+    OI endx = x + size2;
+    int ten = 1;
+    
+    for(int i = 1; i <= size1; i++){
+       *(endx - i) = *(e1-i);
+    }    
+    
+    for(int i = 1; i <= size2; i++){
+       int num = *(e2-i);
+       for(int j = 0; j < num*ten; j++){
+          if(i == 1 && j == 0){
+             j++;
+          }
+          endx = plus_digits(b1, e1, x, endx, x);
+       }
+       ten = ten * 10;
     }
-    return x;}
+    
+    return endx;}
 
 // --------------
 // divides_digits
@@ -256,8 +277,52 @@ OI multiplies_digits (II1 b1, II1 e1, II2 b2, II2 e2, OI x) {
 */
 template <typename II1, typename II2, typename OI>
 OI divides_digits (II1 b1, II1 e1, II2 b2, II2 e2, OI x) {
-    // <your code>
-    return x;}
+    int size1 = e1 - b1;
+
+    OI endx = x + size1;
+    int count = 0;
+    bool remainder = false;
+    bool zero = false;
+    for(int i = 1; i <= size1; i++){
+       *(endx - i) = *(e1-i);
+    }
+
+    while(!remainder && !zero){
+       endx = minus_digits(x, endx, b2, e2, x);
+       count++;
+       if((endx - x) < (e2 - b2)){
+          remainder = true;
+       }
+       if((endx - x) == (e2 - b2)){
+          for(int i = 0; i < (endx - x); i++){
+              if(*(x+i) < *(b2+i)){
+                 remainder = true;
+              }
+              if(*(x+i) == 0){
+                  zero = true;
+              }
+              else {
+                  zero = false;
+                  break;
+              }
+            }
+        }
+
+    }
+
+    int digits = 0;
+    int t = count;
+    while(t > 0){
+        t = t / 10;
+        digits++;
+    }
+    endx = x + digits;
+    for(int i = digits - 1; i >= 0; i--){
+        *(x+i) = count % 10;
+        count /= 10;
+    }
+
+    return endx;}
 
 // -------
 // Integer
@@ -274,8 +339,20 @@ class Integer {
          * <your documentation>
          */
         friend bool operator == (const Integer& lhs, const Integer& rhs) {
-            // <your code>
-            return false;}
+            if(lhs.integer.size() != rhs.integer.size())
+            {
+            	return false;
+            }
+            else
+            {
+            	for(int i = 0; i < (int)lhs.integer.size(); i++)
+            	{
+                    if(lhs.integer[i] != rhs.integer[i])
+                        return false;
+            	}
+            }
+
+            return true;}
 
         // -----------
         // operator !=
@@ -295,8 +372,37 @@ class Integer {
          * <your documentation>
          */
         friend bool operator < (const Integer& lhs, const Integer& rhs) {
-            // <your code>
-            return false;}
+            if(!lhs.negative && !rhs.negative){
+            	if(lhs.integer.size() < rhs.integer.size())
+            		return true;
+        	    else
+       	        {
+           		 	for(int i = (int)lhs.integer.size(); i > -1; i--)
+           		 	{
+          		  		if(lhs.integer[i] > rhs.integer[i])
+           		 			return false;
+           		 	}
+        	    }
+        	}
+            if(lhs.negative && !rhs.negative){
+               return true;
+        	}
+            if(!lhs.negative && rhs.negative){
+               return false;
+        	} 
+            if(lhs.negative && rhs.negative){
+            	if(lhs.integer.size() < rhs.integer.size())
+            		return false;
+        	    else
+       	        {
+           		 	for(int i = (int)lhs.integer.size(); i > -1; i--)
+           		 	{
+          		  		if(lhs.integer[i] < rhs.integer[i])
+           		 			return false;
+           		 	}
+        	    }
+        	}        	
+        	return true;}
 
         // -----------
         // operator <=
@@ -408,8 +514,17 @@ class Integer {
          * <your documentation>
          */
         friend std::ostream& operator << (std::ostream& lhs, const Integer& rhs) {
-            // <your code>
-            return lhs << "0";}
+           int sum = 0;
+           int ten = 1;
+           if(rhs.negative == true)
+              ten = -1;
+           for(int i = (int) rhs.integer.size() - 1; i > -1; i--)
+            {
+               sum += rhs.integer[i] * ten;
+               ten *= 10;
+            }
+
+            return lhs << sum;}
 
         /**
          * absolute value
@@ -434,6 +549,7 @@ class Integer {
 
         C integer;
         deque<char> strint;
+        bool negative;
 
     private:
         // -----
@@ -442,7 +558,7 @@ class Integer {
 
         bool valid ()  {
             for(int y = 0; y < (int)integer.size(); y++)
-              if(integer[y] > 9)
+              if(integer[y] > 9 || (integer[y] * -1) > 9)
                  return false;
 
             return true;}
@@ -456,36 +572,53 @@ class Integer {
          * <your documentation>
          */
         Integer (int value) {
-            while(value > 9){
-              integer.push_back(value % 10);
+            negative = false;
+            int neg = 1;
+            if(value < 0){ 
+               neg = -1;
+               value = value * neg;
+               negative = true;
+            }
+            
+            while((value) > 9){
+              integer.push_back((value % 10));
               value = value / 10;
             }
+
             integer.push_back(value);
-            int count = 0;
-            for(int i = 1; i < (int)integer.size(); i++)
+            int f = 0;
+            int b = (int)integer.size() - 1;
+            while(f < b)
             {
-              int t = *(integer.rbegin());
-              *(integer.rbegin() - count) = *(integer.rend() + i);
-              *(integer.rend() + i) = t;
-              ++count;
+              int t = integer[f];
+              integer[f] = integer[b];
+              integer[b] = t;
+              f++;
+              b--;
+
+
             }
-            assert(valid());}
+
+            assert(valid());
+       }
 
         /**
          * <your documentation>
          * @throws invalid_argument if value is not a valid representation of an Integer
          */
         explicit Integer (const std::string& value) {
+            negative = false;
             for(int i = 0; i < (int)value.length(); i++) {
               strint.push_back(value.at(i));
             }
-            int temp = 1;
+            int neg = 1;
             if(strint[0] == '-'){
-              temp = -1;
+              neg = -1;
+              negative = true;
               strint.erase(strint.begin());
             }
             for(int x = 0; x < (int)strint.size(); x++) {
-              int test = temp * atoi(&strint[x]);
+              int test = atoi(&strint[x]);
               if(test == 0)
               {
                 if(strint[x] != '0')
@@ -502,27 +635,6 @@ class Integer {
         // ~Integer ();
         // Integer& operator = (const Integer&);
         
-        // ------------
-        // getOnesPlace
-        // ------------
-
-        /**
-         * <documentation yo>
-         */
-        T* getOnesPlace() {
-          return integer.front();
-        }
-
-        // ---------------
-        // getMostSigPlace
-        // ---------------
-
-        /**
-         * <documentation yo>
-         */
-        T* getMostSigPlace() {
-          return integer.end();
-        }
         // ----------
         // operator -
         // ----------
@@ -531,8 +643,16 @@ class Integer {
          * <your documentation>
          */
         Integer operator - () const {
-            // <your code>
-            return Integer(0);}
+           int sum = 0;
+           int ten = -1;
+           if(negative == true)
+              ten = 1;
+           for(int i = (int) integer.size() - 1; i > -1; i--)
+            {
+               sum += integer[i] * ten;
+			   ten *= 10;
+            }
+            return Integer(sum);}
 
         // -----------
         // operator ++
@@ -580,7 +700,32 @@ class Integer {
          * <your documentation>
          */
         Integer& operator += (const Integer& rhs) {
-            // <your code>
+            C tempint;
+            for(int i = 0; i < ((int)integer.size() + (int)rhs.integer.size()); i++) {
+                tempint.push_back(0);
+            }
+
+            if(!negative && !rhs.negative) {
+                plus_digits(rhs.integer.begin(), rhs.integer.end(), integer.begin(), integer.end(), tempint.begin());
+            }
+            if(negative && !rhs.negative) {
+                minus_digits(rhs.integer.begin(), rhs.integer.end(), integer.begin(), integer.end(), tempint.begin());
+                negative = false;
+            }
+            if(!negative && rhs.negative) {
+                minus_digits(integer.begin(), integer.end(), rhs.integer.begin(), rhs.integer.end(), tempint.begin());
+            }
+            if(negative && rhs.negative) {
+                plus_digits(integer.begin(), integer.end(), rhs.integer.begin(), rhs.integer.end(), tempint.begin());
+            }
+
+            C int2;
+            for(int i = 0; i < (int)tempint.size(); i++){
+                if(tempint[i] != 0 || i == ((int) tempint.size() - 1)){
+                    int2.push_back(tempint[i]);
+                }
+            }
+            integer = int2;
             return *this;}
 
         // -----------
@@ -591,7 +736,34 @@ class Integer {
          * <your documentation>
          */
         Integer& operator -= (const Integer& rhs) {
-            // <your code>
+            if(!negative && !rhs.negative) {
+                if(*this >= rhs)
+                    minus_digits(integer.begin(), integer.end(), rhs.integer.begin(), rhs.integer.end(), integer.begin());
+                else {
+                    minus_digits(rhs.integer.begin(), rhs.integer.end(), integer.begin(), integer.end(), integer.begin());
+                    negative = true;
+                }
+            }
+            if(negative && !rhs.negative)
+                plus_digits(rhs.integer.begin(), rhs.integer.end(), integer.begin(), integer.end(), integer.begin());
+            if(!negative && rhs.negative)
+                plus_digits(rhs.integer.begin(), rhs.integer.end(), integer.begin(), integer.end(), integer.begin());
+            if(negative && rhs.negative) {
+                if(*this < rhs)
+                    minus_digits(integer.begin(), integer.end(), rhs.integer.begin(), rhs.integer.end(), integer.begin());
+                else {
+                    minus_digits(rhs.integer.begin(), rhs.integer.end(), integer.begin(), integer.end(), integer.begin());
+                    negative = false;
+                }
+            }
+
+            C int2;
+            for(int i = 0; i < (int)integer.size(); i++){
+                if(integer[i] != 0 || i == ((int) integer.size() - 1)){
+                    int2.push_back(integer[i]);
+                }
+            }
+            integer = int2;
             return *this;}
 
         // -----------
@@ -602,7 +774,31 @@ class Integer {
          * <your documentation>
          */
         Integer& operator *= (const Integer& rhs) {
-            // <your code>
+            C tempint;
+            for(int i = 0; i < ((int)integer.size() + (int)rhs.integer.size()); i++)
+                tempint.push_back(0);
+    
+            if(!negative && !rhs.negative)
+                multiplies_digits(integer.begin(), integer.end(), rhs.integer.begin(), rhs.integer.end(), tempint.begin());
+            if(negative && !rhs.negative)
+                multiplies_digits(rhs.integer.begin(), rhs.integer.end(), integer.begin(), integer.end(), tempint.begin());
+            if(!negative && rhs.negative)
+            {
+                multiplies_digits(rhs.integer.begin(), rhs.integer.end(), integer.begin(), integer.end(), tempint.begin());
+                negative = true;
+            }
+            if(negative && rhs.negative){
+                multiplies_digits(rhs.integer.begin(), rhs.integer.end(), integer.begin(), integer.end(), tempint.begin());
+                negative = false;
+            }
+            C int2;
+            for(int i = 0; i < (int)tempint.size(); i++){
+                if(tempint[i] != 0 || i == ((int)tempint.size() - 1)){
+                  int2.push_back(tempint[i]);
+                }
+            }
+
+            integer = int2;
             return *this;}
 
         // -----------
@@ -614,7 +810,32 @@ class Integer {
          * @throws invalid_argument if (rhs == 0)
          */
         Integer& operator /= (const Integer& rhs) {
-            // <your code>
+            C tempint;
+            for(int i = 0; i < ((int)integer.size() + (int)rhs.integer.size()); i++)
+                tempint.push_back(0);
+
+            if(!negative && !rhs.negative)
+                divides_digits(integer.begin(), integer.end(), rhs.integer.begin(), rhs.integer.end(), tempint.begin());
+            if(negative && !rhs.negative)
+                divides_digits(rhs.integer.begin(), rhs.integer.end(), integer.begin(), integer.end(), tempint.begin());
+            if(!negative && rhs.negative)
+            {
+                divides_digits(rhs.integer.begin(), rhs.integer.end(), integer.begin(), integer.end(), tempint.begin());
+                negative = true;
+            }
+            if(negative && rhs.negative){
+                divides_digits(rhs.integer.begin(), rhs.integer.end(), integer.begin(), integer.end(), tempint.begin());
+                negative = false;
+            }
+
+            C int2;
+            for(int i = 0; i < (int)tempint.size(); i++){
+                if(tempint[i] != 0){
+                  int2.push_back(tempint[i]);
+                }
+            }
+
+            integer = int2;
             return *this;}
 
         // -----------
@@ -626,7 +847,7 @@ class Integer {
          * @throws invalid_argument if (rhs <= 0)
          */
         Integer& operator %= (const Integer& rhs) {
-            // <your code>
+
             return *this;}
 
         // ------------
@@ -637,7 +858,9 @@ class Integer {
          * <your documentation>
          */
         Integer& operator <<= (int n) {
-            // <your code>
+            C tempint;
+            shift_left_digits(integer.begin(), integer.end(), n, tempint.begin());
+            integer = tempint;
             return *this;}
 
         // ------------
@@ -648,7 +871,9 @@ class Integer {
          * <your documentation>
          */
         Integer& operator >>= (int n) {
-            // <your code>
+            C tempint;
+            shift_right_digits(integer.begin(), integer.end(), n, tempint.begin());
+            integer = tempint;
             return *this;}
 
         // ---
@@ -660,7 +885,11 @@ class Integer {
          * <your documentation>
          */
         Integer& abs () {
-            // <your code>
+            for(int i = 0; i < (int)integer.size(); i++)
+            {
+            	if(integer[i] < 0)
+                    integer[i] = integer[i] * -1;
+            }
             return *this;}
 
         // ---
@@ -674,7 +903,11 @@ class Integer {
          * @throws invalid_argument if (e < 0)
          */
         Integer& pow (int e) {
-            // <your code>
+            C tempint;
+            for(int i = 0; i < (e - 1); i++)
+            {
+                multiplies_digits(integer.begin(), integer.end(), integer.begin(), integer.end(), tempint.begin());
+            }
             return *this;}};
 
 #endif // Integer_h
