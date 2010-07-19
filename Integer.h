@@ -508,7 +508,7 @@ class Integer {
         // -----------
 
         /**
-         * <your documentation>
+         * returns true if lhs is equal to rhs.
          */
         friend bool operator == (const Integer& lhs, const Integer& rhs) {
             if(lhs.integer.size() != rhs.integer.size())
@@ -531,7 +531,7 @@ class Integer {
         // -----------
 
         /**
-         * <your documentation>
+         * returns true if lhs is not equal to rhs
          */
         friend bool operator != (const Integer& lhs, const Integer& rhs) {
             return !(lhs == rhs);}
@@ -541,7 +541,7 @@ class Integer {
         // ----------
 
         /**
-         * <your documentation>
+         * returns true is lhs is less than rhs
          */
         friend bool operator < (const Integer& lhs, const Integer& rhs) {
             if(!lhs.negative && !rhs.negative){

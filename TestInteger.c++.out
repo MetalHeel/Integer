@@ -1,0 +1,15 @@
+TestInteger.c++
+.........................F.......
+
+
+!!!FAILURES!!!
+Test Results:
+Run:  32   Failures: 1   Errors: 0
+
+
+1) test: TestInteger::test_minus_equals (F) line: 309 TestInteger.c++
+assertion failed
+- Expression: x == 0
+
+
+Done.

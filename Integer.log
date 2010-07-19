@@ -1,0 +1,41 @@
+commit 9b976c5e8cf4426106b6be80e333c41920e3b087
+Author: Bram <MetalHeel@aol.com>
+Date:   Sun Jul 18 23:53:28 2010 -0500
+
+    something kind of working...
+
+commit 9756376b36fe7efaa75a6063c6cd5a0ed02ecc3a
+Author: Bram <MetalHeel@aol.com>
+Date:   Sat Jul 17 00:29:50 2010 -0500
+
+    Everything may be done execept %=...
+
+commit 1a11eeda45853a0c87959187e3f0f0b2b15fd4af
+Author: Bram <MetalHeel@aol.com>
+Date:   Fri Jul 16 14:26:32 2010 -0500
+
+    Lots of new stuff done...
+
+commit db002edcc327f2572506a60d9098784ebe52579a
+Author: Bram <MetalHeel@aol.com>
+Date:   Wed Jul 14 17:52:40 2010 -0500
+
+    Shifts, add, and subtract are done, working on comparators...
+
+commit 25b426725a903b144cc09a298a0cbb0dab91907e
+Author: Bram <MetalHeel@aol.com>
+Date:   Mon Jul 12 17:15:48 2010 -0500
+
+    Constructors done, valid done, started on shifts...
+
+commit 341b26abb95312868a2aba6a20acfce5a78c3e15
+Author: Bram <MetalHeel@aol.com>
+Date:   Mon Jul 12 14:47:08 2010 -0500
+
+    The initial files...
+
+commit 84b5f9293bda62f8fd65f62066608f284a21eb12
+Author: Bram <MetalHeel@aol.com>
+Date:   Mon Jul 12 14:33:43 2010 -0500
+
+    Making the repository...
