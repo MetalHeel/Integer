@@ -47,8 +47,9 @@ OI shift_left_digits (II b, II e, int n, OI x) {
     {
       *(location + a) = 0;
     }
+    location = location + n;
 
-    return location+n;}
+    return location;}
 
 // ------------------
 // shift_right_digits
@@ -180,6 +181,7 @@ OI minus_digits (II1 b1, II1 e1, II2 b2, II2 e2, OI x) {
     int carry = 0;
     for(int i = 1; i <= size2; i++){
         int t = *(e1-i) + borrow;
+                    
         if(t < *(e2 - i)){
            borrow = -1;
            carry = 10;
@@ -238,27 +240,146 @@ OI minus_digits (II1 b1, II1 e1, II2 b2, II2 e2, OI x) {
 */
 template <typename II1, typename II2, typename OI>
 OI multiplies_digits (II1 b1, II1 e1, II2 b2, II2 e2, OI x) {
-	int size1 = e1 - b1;
+    int size1 = e1 - b1;
     int size2 = e2 - b2;
-    OI endx = x + size2;
-    int ten = 1;
+    OI endx = x + 1;
     
-    for(int i = 1; i <= size1; i++){
-       *(endx - i) = *(e1-i);
-    }    
+    vector<int> mul (1,0);    
     
-    for(int i = 1; i <= size2; i++){
-       int num = *(e2-i);
-       for(int j = 0; j < num*ten; j++){
-          if(i == 1 && j == 0){
-             j++;
-          }
-          endx = plus_digits(b1, e1, x, endx, x);
-       }
-       ten = ten * 10;
+    typename vector<int>::iterator end1;
+    typename vector<int>::iterator end2;
+    typename vector<int>::iterator end3;
+    typename vector<int>::iterator end4;
+    typename vector<int>::iterator end5;
+    typename vector<int>::iterator end6;    
+    typename vector<int>::iterator end7;    
+    typename vector<int>::iterator end8;    
+    typename vector<int>::iterator end9;    
+        
+    
+    vector<int> zero (1, 0);
+    vector<int> one (size1, 0);
+    end1 = plus_digits(b1, e1, one.begin(), one.end(), one.begin());
+    vector<int> two (size1 + 1, 0);
+    end2 = plus_digits(b1, e1, one.begin(), end1, two.begin());    
+    vector<int> three (size1 + 2, 0);
+    end3 = plus_digits(b1, e1, two.begin(), end2, three.begin());
+    vector<int> four (size1 + 3, 0);
+    end4 = plus_digits(b1, e1, three.begin(), end3, four.begin());
+    vector<int> five (size1 + 4, 0);
+    end5 = plus_digits(b1, e1, four.begin(), end4, five.begin());
+    vector<int> six (size1 + 5, 0);
+    end6 = plus_digits(b1, e1, five.begin(), end5, six.begin());
+    vector<int> seven (size1 + 6, 0);
+    end7 = plus_digits(b1, e1, six.begin(), end6, seven.begin());
+    vector<int> eight (size1 + 7, 0);
+    end8 = plus_digits(b1, e1, seven.begin(), end7, eight.begin());
+    vector<int> nine (size1 + 8, 0);
+    end9 = plus_digits(b1, e1, eight.begin(), end8, nine.begin()); 
+
+    
+	 int shift = 0;
+    for(int i = 1; i <=  size2;i++){
+       int temp = *(e2 - i);
+
+       vector<int> sto (size1 + 8 + shift, 0);
+       typename vector<int>::iterator endsto;
+       if(i == 1){ 
+       switch (temp) {
+        case 0:
+            endsto = shift_left_digits(zero.begin(),zero.end(), shift, sto.begin());
+            endx = plus_digits(mul.begin(),mul.end(), sto.begin(), endsto, x);
+            break;
+        case 1:
+            endsto = shift_left_digits(one.begin(),end1, shift, sto.begin()); 
+            endx = plus_digits(mul.begin(),mul.end(), sto.begin(), endsto, x);
+            break;
+        case 2:
+            endsto = shift_left_digits(two.begin(),end2, shift, sto.begin()); 
+            endx = plus_digits(mul.begin(),mul.end(), sto.begin(), endsto, x);
+            break;           
+        case 3:
+            endsto = shift_left_digits(three.begin(),end3, shift, sto.begin()); 
+            endx = plus_digits(mul.begin(),mul.end(), sto.begin(), endsto, x);
+            break;            
+        case 4:
+            endsto = shift_left_digits(four.begin(),end4, shift, sto.begin()); 
+            endx = plus_digits(mul.begin(),mul.end(), sto.begin(), endsto, x);
+            break;
+        case 5:
+            endsto = shift_left_digits(five.begin(),end5, shift, sto.begin()); 
+            endx = plus_digits(mul.begin(),mul.end(), sto.begin(), endsto, x);
+            break;
+        case 6:
+            endsto = shift_left_digits(six.begin(),end6, shift, sto.begin()); 
+            endx = plus_digits(mul.begin(),mul.end(), sto.begin(), endsto, x);
+            break;                                    
+        case 7:
+            endsto = shift_left_digits(seven.begin(), end7, shift, sto.begin()); 
+            endx = plus_digits(mul.begin(),mul.end(), sto.begin(), endsto, x);          
+            break;
+        case 8:
+            endsto = shift_left_digits(eight.begin(),end8, shift, sto.begin()); 
+            endx = plus_digits(mul.begin(),mul.end(), sto.begin(), endsto, x);
+            break;
+        case 9:
+            endsto = shift_left_digits(nine.begin(),end9, shift, sto.begin()); 
+            endx = plus_digits(mul.begin(),mul.end(), sto.begin(), endsto, x);
+            break;                                           
+        }
+        }
+       else{     
+       switch (temp) {
+        case 0:
+            endsto = shift_left_digits(zero.begin(),zero.end(), shift, sto.begin());
+            endx = plus_digits(x, endx, sto.begin(), endsto, x);
+            break;
+        case 1:
+            endsto = shift_left_digits(one.begin(),end1, shift, sto.begin()); 
+            endx = plus_digits(x, endx, sto.begin(), endsto, x);
+            break;
+        case 2:
+            endsto = shift_left_digits(two.begin(),end2, shift, sto.begin()); 
+            endx = plus_digits(x, endx, sto.begin(), endsto, x);
+            break;           
+        case 3:
+            endsto = shift_left_digits(three.begin(),end3, shift, sto.begin()); 
+            endx = plus_digits(x, endx, sto.begin(), endsto, x);
+            break;            
+        case 4:
+            endsto = shift_left_digits(four.begin(),end4, shift, sto.begin()); 
+            endx = plus_digits(x, endx, sto.begin(), endsto, x);
+            break;
+        case 5:
+            endsto = shift_left_digits(five.begin(),end5, shift, sto.begin()); 
+            endx = plus_digits(x, endx, sto.begin(), endsto, x);
+            break;
+        case 6:
+            endsto = shift_left_digits(six.begin(),end6, shift, sto.begin()); 
+            endx = plus_digits(x, endx, sto.begin(), endsto, x);
+            break;                                    
+        case 7:
+            endsto = shift_left_digits(seven.begin(), end7, shift, sto.begin()); 
+            endx = plus_digits(x, endx, sto.begin(), endsto, x);          
+            break;
+        case 8:
+            endsto = shift_left_digits(eight.begin(),end8, shift, sto.begin()); 
+            endx = plus_digits(x, endx, sto.begin(), endsto, x);
+            break;
+        case 9:
+            endsto = shift_left_digits(nine.begin(),end9, shift, sto.begin()); 
+            endx = plus_digits(x, endx, sto.begin(), endsto, x);
+            break;                                           
+        }
+        }
+    
+	    ++shift;   
     }
     
+
+
     return endx;}
+
 
 // --------------
 // divides_digits
@@ -284,7 +405,7 @@ OI divides_digits (II1 b1, II1 e1, II2 b2, II2 e2, OI x) {
     bool remainder = false;
     bool zero = false;
     for(int i = 1; i <= size1; i++){
-       *(endx - i) = *(e1-i);
+       *(endx - i) = *(e1 - i);
     }
 
     while(!remainder && !zero){
@@ -309,7 +430,6 @@ OI divides_digits (II1 b1, II1 e1, II2 b2, II2 e2, OI x) {
         }
 
     }
-
     int digits = 0;
     int t = count;
     while(t > 0){
@@ -317,9 +437,61 @@ OI divides_digits (II1 b1, II1 e1, II2 b2, II2 e2, OI x) {
         digits++;
     }
     endx = x + digits;
+
     for(int i = digits - 1; i >= 0; i--){
         *(x+i) = count % 10;
         count /= 10;
+    }
+   
+    return endx;}
+
+// -----------
+// mods_digits
+// -----------
+
+/**
+* @param b an iterator to the beginning of an input sequence (inclusive)
+* @param e an iterator to the end of an input sequence (exclusive)
+* @param b2 an iterator to the beginning of an input sequence (inclusive)
+* @param e2 an iterator to the end of an input sequence (exclusive)
+* @param x an iterator to the beginning of an output sequence (inclusive)
+* @return an iterator to the end of an output sequence (exclusive)
+* the sequences are of decimal digits
+* output the modulus of the two input sequences into the output sequence
+* (s1 % s2) => x
+*/
+template <typename II1, typename II2, typename OI>
+OI mods_digits (II1 b1, II1 e1, II2 b2, II2 e2, OI x) {
+    int size1 = e1 - b1;
+
+    OI endx = x + size1;
+    bool remainder = false;
+    bool zero = false;
+    
+    for(int i = 1; i <= size1; i++){
+       *(endx - i) = *(e1 - i);
+    }
+
+    while(!remainder && !zero){
+       endx = minus_digits(x, endx, b2, e2, x);
+       if((endx - x) < (e2 - b2)){
+          remainder = true;
+       }
+       if((endx - x) == (e2 - b2)){
+          for(int i = 0; i < (endx - x); i++){
+              if(*(x+i) < *(b2+i)){
+                 remainder = true;
+              }
+              if(*(x+i) == 0){
+                  zero = true;
+              }
+              else {
+                  zero = false;
+                  break;
+              }
+            }
+        }
+
     }
 
     return endx;}
@@ -375,14 +547,19 @@ class Integer {
             if(!lhs.negative && !rhs.negative){
             	if(lhs.integer.size() < rhs.integer.size())
             		return true;
-        	    else
+        	      else
        	        {
-           		 	for(int i = (int)lhs.integer.size(); i > -1; i--)
-           		 	{
+       	        if(lhs.integer.size() > rhs.integer.size())
+            	     return false;
+           		  for(int i = 0; i < (int)lhs.integer.size(); i++)
+           		  {
           		  		if(lhs.integer[i] > rhs.integer[i])
            		 			return false;
-           		 	}
-        	    }
+           		 		else if(lhs.integer[i] < rhs.integer[i])
+           		 			return true;
+           		   }
+        	       }
+        	       return false;
         	}
             if(lhs.negative && !rhs.negative){
                return true;
@@ -393,14 +570,19 @@ class Integer {
             if(lhs.negative && rhs.negative){
             	if(lhs.integer.size() < rhs.integer.size())
             		return false;
-        	    else
+        	      else
        	        {
-           		 	for(int i = (int)lhs.integer.size(); i > -1; i--)
-           		 	{
-          		  		if(lhs.integer[i] < rhs.integer[i])
+       	        if(lhs.integer.size() > rhs.integer.size())
+            	     return true;
+           		  for(int i = 0; i < (int)lhs.integer.size(); i++)
+           		  {
+          		  		if(lhs.integer[i] > rhs.integer[i])
+           		 			return true;
+           		 		else if(lhs.integer[i] < rhs.integer[i])
            		 			return false;
-           		 	}
-        	    }
+           		   }
+        	       }
+        	       return false;
         	}        	
         	return true;}
 
@@ -514,6 +696,11 @@ class Integer {
          * <your documentation>
          */
         friend std::ostream& operator << (std::ostream& lhs, const Integer& rhs) {
+            if(rhs.negative) 
+               lhs << "-";
+        		for(int i = 0; i < (int)rhs.integer.size(); i++)
+        			lhs << rhs.integer[i];
+        		/*
            int sum = 0;
            int ten = 1;
            if(rhs.negative == true)
@@ -522,9 +709,9 @@ class Integer {
             {
                sum += rhs.integer[i] * ten;
                ten *= 10;
-            }
+            }*/
 
-            return lhs << sum;}
+            return lhs;}
 
         /**
          * absolute value
@@ -736,9 +923,12 @@ class Integer {
          * <your documentation>
          */
         Integer& operator -= (const Integer& rhs) {
+
             if(!negative && !rhs.negative) {
-                if(*this >= rhs)
+
+                if(*this >= rhs){
                     minus_digits(integer.begin(), integer.end(), rhs.integer.begin(), rhs.integer.end(), integer.begin());
+                }
                 else {
                     minus_digits(rhs.integer.begin(), rhs.integer.end(), integer.begin(), integer.end(), integer.begin());
                     negative = true;
@@ -756,12 +946,12 @@ class Integer {
                     negative = false;
                 }
             }
-
+				int index = 0;
+				while(integer[index] == 0)
+					index++;
             C int2;
-            for(int i = 0; i < (int)integer.size(); i++){
-                if(integer[i] != 0 || i == ((int) integer.size() - 1)){
-                    int2.push_back(integer[i]);
-                }
+            for(int i = index; i < (int)integer.size(); i++){
+               int2.push_back(integer[i]);
             }
             integer = int2;
             return *this;}
@@ -775,6 +965,7 @@ class Integer {
          */
         Integer& operator *= (const Integer& rhs) {
             C tempint;
+         
             for(int i = 0; i < ((int)integer.size() + (int)rhs.integer.size()); i++)
                 tempint.push_back(0);
     
@@ -791,6 +982,7 @@ class Integer {
                 multiplies_digits(rhs.integer.begin(), rhs.integer.end(), integer.begin(), integer.end(), tempint.begin());
                 negative = false;
             }
+       
             C int2;
             for(int i = 0; i < (int)tempint.size(); i++){
                 if(tempint[i] != 0 || i == ((int)tempint.size() - 1)){
@@ -811,28 +1003,28 @@ class Integer {
          */
         Integer& operator /= (const Integer& rhs) {
             C tempint;
+            typename C::const_iterator end;
+
             for(int i = 0; i < ((int)integer.size() + (int)rhs.integer.size()); i++)
                 tempint.push_back(0);
 
             if(!negative && !rhs.negative)
-                divides_digits(integer.begin(), integer.end(), rhs.integer.begin(), rhs.integer.end(), tempint.begin());
+                end = divides_digits(integer.begin(), integer.end(), rhs.integer.begin(), rhs.integer.end(), tempint.begin());
             if(negative && !rhs.negative)
-                divides_digits(rhs.integer.begin(), rhs.integer.end(), integer.begin(), integer.end(), tempint.begin());
+                end = divides_digits(rhs.integer.begin(), rhs.integer.end(), integer.begin(), integer.end(), tempint.begin());
             if(!negative && rhs.negative)
             {
-                divides_digits(rhs.integer.begin(), rhs.integer.end(), integer.begin(), integer.end(), tempint.begin());
+                end = divides_digits(rhs.integer.begin(), rhs.integer.end(), integer.begin(), integer.end(), tempint.begin());
                 negative = true;
             }
             if(negative && rhs.negative){
-                divides_digits(rhs.integer.begin(), rhs.integer.end(), integer.begin(), integer.end(), tempint.begin());
+                end = divides_digits(rhs.integer.begin(), rhs.integer.end(), integer.begin(), integer.end(), tempint.begin());
                 negative = false;
             }
 
             C int2;
-            for(int i = 0; i < (int)tempint.size(); i++){
-                if(tempint[i] != 0){
+            for(int i = 0; i < (end - tempint.begin()); i++){
                   int2.push_back(tempint[i]);
-                }
             }
 
             integer = int2;
@@ -847,7 +1039,20 @@ class Integer {
          * @throws invalid_argument if (rhs <= 0)
          */
         Integer& operator %= (const Integer& rhs) {
+            C result;
+            typename C::const_iterator end;
 
+            for(int i = 0; i < ((int)integer.size() + (int)rhs.integer.size()); i++)
+                result.push_back(0);
+
+            end = mods_digits(integer.begin(), integer.end(), rhs.integer.begin(), rhs.integer.end(), result.begin());
+
+            C int2;
+            for(int i = 0; i < (end - result.begin()); i++){
+                  int2.push_back(result[i]);
+            }
+
+            integer = int2;
             return *this;}
 
         // ------------
@@ -885,6 +1090,7 @@ class Integer {
          * <your documentation>
          */
         Integer& abs () {
+            negative = false;
             for(int i = 0; i < (int)integer.size(); i++)
             {
             	if(integer[i] < 0)
@@ -904,11 +1110,35 @@ class Integer {
          */
         Integer& pow (int e) {
             C tempint;
-            for(int i = 0; i < (e - 1); i++)
-            {
-                multiplies_digits(integer.begin(), integer.end(), integer.begin(), integer.end(), tempint.begin());
-                integer = tempint;
+            for(int i = 0; i < 1500; i++){
+               tempint.push_back(0);
             }
+            tempint.push_back(1);
+      
+   
+            	for(int i = 0; i < e; i++){
+           	     multiplies_digits(tempint.begin(), tempint.end(), integer.begin(), integer.end(), tempint.begin());
+         	   }
+
+
+             
+            C int2;
+            int j = 0;
+            bool z = true;
+            while(z){
+               if(tempint[j] != 0){
+                  z = false;
+                  break;
+               }
+               ++j;           
+            }
+
+            for(int i = j; i < (int)tempint.size(); i++){
+                  int2.push_back(tempint[i]);
+            }
+
+            integer = int2;
+
             return *this;}};
 
 #endif // Integer_h

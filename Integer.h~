@@ -238,7 +238,100 @@ OI minus_digits (II1 b1, II1 e1, II2 b2, II2 e2, OI x) {
 */
 template <typename II1, typename II2, typename OI>
 OI multiplies_digits (II1 b1, II1 e1, II2 b2, II2 e2, OI x) {
-	int size1 = e1 - b1;
+    int size1 = e1 - b1;
+    int size2 = e2 - b2;
+    int combSize = size1 + size2;
+    vector<int> accum(combSize, 0);
+    vector<int> temp(combSize, 0);
+
+    int ones[][10] = {{0, 0, 0, 0, 0, 0, 0, 0, 0, 0}, 
+                      {0, 1, 2, 3, 4, 5, 6, 7, 8, 9}, 
+                      {0, 2, 4, 6, 8, 0, 2, 4, 6, 8}, 
+                      {0, 3, 6, 9, 2, 5, 8, 1, 4, 7}, 
+                      {0, 4, 8, 2, 6, 0, 4, 8, 2, 6}, 
+                      {0, 5, 0, 5, 0, 5, 0, 5, 0, 5}, 
+                      {0, 6, 2, 8, 4, 0, 6, 2, 8, 4}, 
+                      {0, 7, 4, 1, 8, 5, 2, 9, 6, 3}, 
+                      {0, 8, 6, 4, 2, 0, 8, 6, 4, 2}, 
+                      {0, 9, 8, 7, 6, 5, 4, 3, 2, 1}};
+
+    int cars[][10] = {{0, 0, 0, 0, 0, 0, 0, 0, 0, 0}, 
+                      {0, 0, 0, 0, 0, 0, 0, 0, 0, 0}, 
+                      {0, 0, 0, 0, 0, 1, 1, 1, 1, 1}, 
+                      {0, 0, 0, 0, 1, 1, 1, 2, 2, 2}, 
+                      {0, 0, 0, 1, 1, 2, 2, 2, 3, 3}, 
+                      {0, 0, 1, 1, 2, 2, 3, 3, 4, 4}, 
+                      {0, 0, 1, 1, 2, 3, 3, 4, 4, 5}, 
+                      {0, 0, 1, 2, 2, 3, 4, 4, 5, 6}, 
+                      {0, 0, 1, 2, 3, 4, 4, 5, 6, 7}, 
+                      {0, 0, 1, 2, 3, 4, 5, 6, 7, 8}}; 
+
+    int carry = 0;
+    int tens = 0;
+
+    for(int i = 0; i < size2; i++)
+    {
+        for(int j = 0; j < size1; j++)
+        {
+            temp[combSize - (j + 1)] = ones[*(e2 - (i + 1))][*(e1 - (j + 1))] + carry;
+            if(temp[combSize - (j + 1)] > 9)
+            {
+                int t = temp[combSize - (j + 1)];
+                temp[combSize - (j + 1)] = t % 10;
+                carry = t / 10;
+            }
+            else
+                carry = cars[*(e2 - (i + 1))][*(e1 - (j + 1))];
+        }
+        for(int x = 0; x < (int)temp.size(); x++)
+            cout << temp[x] << " ";
+
+        if(carry > 0)
+            temp[combSize - (size1 + 1)] = carry;
+        carry = 0;
+        shift_left_digits(temp.begin(), temp.end(), tens, temp.begin());
+        tens += 1;
+
+        plus_digits(accum.begin(), accum.end(), temp.begin(), temp.end(), accum.begin());
+
+        temp.assign(combSize, 0);
+    }
+
+    int index = 0;
+    while(accum[index] == 0)
+        index++;
+    for(int i = index; i < (int)accum.size(); i++)
+        *(x + (i - index)) = accum[i];
+
+    return x + (int)accum.size() - index;}
+
+/*template <typename II1, typename II2, typename OI>
+OI multiplies_digits (II1 b1, II1 e1, II2 b2, II2 e2, OI x) {
+    int z[] = {0};
+    int one[size1];
+    plus_digits(b1, e1, one, one + size1, one);
+    int two[size1 + 1];
+    plus_digits(b1, e1, one, one + size1, two);
+    int three[size1+2];
+    plus_digits(b1, e1, two, two + size1 + 1, three);
+    int four[size1+3];
+    plus_digits(b1, e1, three, three + size1 + 2, four);
+    int five[size1+4];
+    plus_digits(b1, e1, four, four + size1 + 3, five);
+    int three[size1+5];
+    plus_digits(b1, e1, two, two + six + 1, six);
+    int three[size1+2];
+    plus_digits(b1, e1, two, two + size1 + 1, three);
+    int three[size1+2];
+    plus_digits(b1, e1, two, two + size1 + 1, three);
+    int three[size1+2];
+    plus_digits(b1, e1, two, two + size1 + 1, three);
+    int three[size1+2];
+    plus_digits(b1, e1, two, two + size1 + 1, three);
+    int three[size1+2];
+    plus_digits(b1, e1, two, two + size1 + 1, three);
+
+    int size1 = e1 - b1;
     int size2 = e2 - b2;
     OI endx = x + size2;
     int ten = 1;
@@ -258,7 +351,7 @@ OI multiplies_digits (II1 b1, II1 e1, II2 b2, II2 e2, OI x) {
        ten = ten * 10;
     }
     
-    return endx;}
+    return endx;}*/
 
 // --------------
 // divides_digits
@@ -284,7 +377,7 @@ OI divides_digits (II1 b1, II1 e1, II2 b2, II2 e2, OI x) {
     bool remainder = false;
     bool zero = false;
     for(int i = 1; i <= size1; i++){
-       *(endx - i) = *(e1-i);
+       *(endx - i) = *(e1 - i);
     }
 
     while(!remainder && !zero){
@@ -309,7 +402,6 @@ OI divides_digits (II1 b1, II1 e1, II2 b2, II2 e2, OI x) {
         }
 
     }
-
     int digits = 0;
     int t = count;
     while(t > 0){
@@ -317,9 +409,61 @@ OI divides_digits (II1 b1, II1 e1, II2 b2, II2 e2, OI x) {
         digits++;
     }
     endx = x + digits;
+
     for(int i = digits - 1; i >= 0; i--){
         *(x+i) = count % 10;
         count /= 10;
+    }
+   
+    return endx;}
+
+// -----------
+// mods_digits
+// -----------
+
+/**
+* @param b an iterator to the beginning of an input sequence (inclusive)
+* @param e an iterator to the end of an input sequence (exclusive)
+* @param b2 an iterator to the beginning of an input sequence (inclusive)
+* @param e2 an iterator to the end of an input sequence (exclusive)
+* @param x an iterator to the beginning of an output sequence (inclusive)
+* @return an iterator to the end of an output sequence (exclusive)
+* the sequences are of decimal digits
+* output the modulus of the two input sequences into the output sequence
+* (s1 % s2) => x
+*/
+template <typename II1, typename II2, typename OI>
+OI mods_digits (II1 b1, II1 e1, II2 b2, II2 e2, OI x) {
+    int size1 = e1 - b1;
+
+    OI endx = x + size1;
+    bool remainder = false;
+    bool zero = false;
+    
+    for(int i = 1; i <= size1; i++){
+       *(endx - i) = *(e1 - i);
+    }
+
+    while(!remainder && !zero){
+       endx = minus_digits(x, endx, b2, e2, x);
+       if((endx - x) < (e2 - b2)){
+          remainder = true;
+       }
+       if((endx - x) == (e2 - b2)){
+          for(int i = 0; i < (endx - x); i++){
+              if(*(x+i) < *(b2+i)){
+                 remainder = true;
+              }
+              if(*(x+i) == 0){
+                  zero = true;
+              }
+              else {
+                  zero = false;
+                  break;
+              }
+            }
+        }
+
     }
 
     return endx;}
@@ -775,6 +919,7 @@ class Integer {
          */
         Integer& operator *= (const Integer& rhs) {
             C tempint;
+         
             for(int i = 0; i < ((int)integer.size() + (int)rhs.integer.size()); i++)
                 tempint.push_back(0);
     
@@ -791,6 +936,7 @@ class Integer {
                 multiplies_digits(rhs.integer.begin(), rhs.integer.end(), integer.begin(), integer.end(), tempint.begin());
                 negative = false;
             }
+       
             C int2;
             for(int i = 0; i < (int)tempint.size(); i++){
                 if(tempint[i] != 0 || i == ((int)tempint.size() - 1)){
@@ -811,28 +957,28 @@ class Integer {
          */
         Integer& operator /= (const Integer& rhs) {
             C tempint;
+            typename C::const_iterator end;
+
             for(int i = 0; i < ((int)integer.size() + (int)rhs.integer.size()); i++)
                 tempint.push_back(0);
 
             if(!negative && !rhs.negative)
-                divides_digits(integer.begin(), integer.end(), rhs.integer.begin(), rhs.integer.end(), tempint.begin());
+                end = divides_digits(integer.begin(), integer.end(), rhs.integer.begin(), rhs.integer.end(), tempint.begin());
             if(negative && !rhs.negative)
-                divides_digits(rhs.integer.begin(), rhs.integer.end(), integer.begin(), integer.end(), tempint.begin());
+                end = divides_digits(rhs.integer.begin(), rhs.integer.end(), integer.begin(), integer.end(), tempint.begin());
             if(!negative && rhs.negative)
             {
-                divides_digits(rhs.integer.begin(), rhs.integer.end(), integer.begin(), integer.end(), tempint.begin());
+                end = divides_digits(rhs.integer.begin(), rhs.integer.end(), integer.begin(), integer.end(), tempint.begin());
                 negative = true;
             }
             if(negative && rhs.negative){
-                divides_digits(rhs.integer.begin(), rhs.integer.end(), integer.begin(), integer.end(), tempint.begin());
+                end = divides_digits(rhs.integer.begin(), rhs.integer.end(), integer.begin(), integer.end(), tempint.begin());
                 negative = false;
             }
 
             C int2;
-            for(int i = 0; i < (int)tempint.size(); i++){
-                if(tempint[i] != 0){
+            for(int i = 0; i < (end - tempint.begin()); i++){
                   int2.push_back(tempint[i]);
-                }
             }
 
             integer = int2;
@@ -847,7 +993,20 @@ class Integer {
          * @throws invalid_argument if (rhs <= 0)
          */
         Integer& operator %= (const Integer& rhs) {
+            C result;
+            typename C::const_iterator end;
 
+            for(int i = 0; i < ((int)integer.size() + (int)rhs.integer.size()); i++)
+                result.push_back(0);
+
+            end = mods_digits(integer.begin(), integer.end(), rhs.integer.begin(), rhs.integer.end(), result.begin());
+
+            C int2;
+            for(int i = 0; i < (end - result.begin()); i++){
+                  int2.push_back(result[i]);
+            }
+
+            integer = int2;
             return *this;}
 
         // ------------
@@ -885,6 +1044,7 @@ class Integer {
          * <your documentation>
          */
         Integer& abs () {
+            negative = false;
             for(int i = 0; i < (int)integer.size(); i++)
             {
             	if(integer[i] < 0)
@@ -904,10 +1064,10 @@ class Integer {
          */
         Integer& pow (int e) {
             C tempint;
-            for(int i = 0; i < (e - 1); i++)
-            {
-                multiplies_digits(integer.begin(), integer.end(), integer.begin(), integer.end(), tempint.begin());
-            }
+            tempint.push_back(1);
+            for(int i = 0; i < e; i++)
+                multiplies_digits(tempint.begin(), tempint.end(), integer.begin(), integer.end(), tempint.begin());
+            integer = tempint;
             return *this;}};
 
 #endif // Integer_h
